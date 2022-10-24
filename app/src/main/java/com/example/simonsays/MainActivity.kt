@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         var startIf = false
         var puntos:Int = 0
         var coloresJugador:Array<Int> = arrayOf()
+        var acierto = false
 
 
         start.setOnClickListener {
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity() {
                     coloresJugador[contador] = 0
 
                     if (coloresJugador[contador] == coloresMaquina[contador]){
+                        acierto = true
                         contador = contador + 1
                         println(contador)
                     } else {
@@ -86,16 +88,21 @@ class MainActivity : AppCompatActivity() {
                         var i:Int = 0
                         while (i<coloresMaquina.size) {
                             coloresMaquina.remove(i)
+                            i = i+1
                         }
+                        acierto = false
+                        println(coloresMaquina.size)
                         puntos = 0
                         startIf = false
+                        contador = 0
                     }
-                    if (contador==coloresJugador.size) {
+                    if (contador==coloresJugador.size && acierto == true) {
                         Toast.makeText(this, "Has superado esta ronda", Toast.LENGTH_SHORT).show()
                         puntos = puntos + 1
                         coloresJugador = arrayOf()
                         startIf = false
                         contador = 0
+                        acierto = false
                     }
 
             }
@@ -107,6 +114,7 @@ class MainActivity : AppCompatActivity() {
 
                 coloresJugador[contador] = 1
                 if (coloresJugador[contador] == coloresMaquina[contador]){
+                    acierto = true
                     contador = contador + 1
                     println(contador)
                 } else {
@@ -115,16 +123,20 @@ class MainActivity : AppCompatActivity() {
                     var i:Int = 0
                     while (i<coloresMaquina.size) {
                         coloresMaquina.remove(i)
+                        i = i+1
                     }
+                    acierto = false
                     puntos = 0
                     startIf = false
+                    contador = 0
                 }
-                    if (contador==coloresJugador.size) {
+                    if (contador==coloresJugador.size && acierto == true) {
                         Toast.makeText(this, "Has superado esta ronda", Toast.LENGTH_SHORT).show()
                         puntos = puntos + 1
                         coloresJugador = arrayOf()
                         startIf = false
                         contador = 0
+                        acierto = false
 
                     }
                 }
@@ -137,6 +149,7 @@ class MainActivity : AppCompatActivity() {
 
                 coloresJugador[contador] = 2
                 if (coloresJugador[contador] == coloresMaquina[contador]){
+                    acierto = true
                     contador = contador + 1
                     println(contador)
                 } else {
@@ -145,16 +158,20 @@ class MainActivity : AppCompatActivity() {
                     var i:Int = 0
                     while (i<coloresMaquina.size) {
                         coloresMaquina.remove(i)
+                        i = i+1
                     }
+                    acierto = false
                     puntos = 0
                     startIf = false
+                    contador = 0
                 }
-                    if (contador==coloresJugador.size) {
+                    if (contador==coloresJugador.size && acierto == true) {
                         Toast.makeText(this, "Has superado esta ronda", Toast.LENGTH_SHORT).show()
                         puntos = puntos + 1
                         coloresJugador = arrayOf()
                         startIf = false
                         contador = 0
+                        acierto = false
                     }
                 }
             }
@@ -166,6 +183,7 @@ class MainActivity : AppCompatActivity() {
 
                 coloresJugador[contador] = 3
                 if (coloresJugador[contador] == coloresMaquina[contador]){
+                    acierto = true
                     contador = contador + 1
                     println(contador)
                 } else {
@@ -174,18 +192,22 @@ class MainActivity : AppCompatActivity() {
                     var i:Int = 0
                     while (i<coloresMaquina.size) {
                         coloresMaquina.remove(i)
+                        i = i+1
                     }
+                    acierto = false
                     puntos = 0
                     startIf = false
+                    contador = 0
                 }
                 println(contador)
                 println(coloresJugador.size)
-                if (contador==coloresJugador.size) {
-                        Toast.makeText(this, "Has superado esta ronda", Toast.LENGTH_SHORT).show()
-                        puntos = puntos + 1
-                        coloresJugador = arrayOf()
-                        startIf = false
+                if (contador==coloresJugador.size && acierto == true) {
+                    Toast.makeText(this, "Has superado esta ronda", Toast.LENGTH_SHORT).show()
+                    puntos = puntos + 1
+                    coloresJugador = arrayOf()
+                    startIf = false
                     contador = 0
+                    acierto = false
                 }
                 }
             }
