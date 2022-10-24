@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">simonSays</string>
+    <string name="button3Green">button3</string>
+    <string name="buttonRed">button</string>
+    <string name="button2Blue">button2</string>
+    <string name="button4Yellow">button4</string>
 </resources>
