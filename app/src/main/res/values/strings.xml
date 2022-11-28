@@ -6,4 +6,6 @@
     <string name="button4Yellow">button4</string>
     <string name="start">Start</string>
     <string name="punt">Punt</string>
+    <string name="ronda">Ronda:</string>
+    <string name="rondas">Ronda: 0</string>
 </resources>
