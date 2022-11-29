@@ -8,20 +8,30 @@ import android.widget.Button
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
 
+@Suppress("UNUSED_EXPRESSION")
 class MainActivity : AppCompatActivity() {
 
     var coloresMaquina = ArrayList<Int>()
+    var partida : Boolean = false
     var puntos:Int = 0
     var contador:Int = 0
     var ronda : Int = 0
+    var recoRonda :Int = 0
+    var recorPuntos :Int = 0
+    val miModelo by viewModels<MyViewModelito>()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
 
         val start = findViewById<Button>(R.id.start)
         val red = findViewById<Button>(R.id.red)
@@ -36,53 +46,46 @@ class MainActivity : AppCompatActivity() {
             secuencia()
         }
 
-        red.setOnClickListener {
-            pulsar(0)
-            if (comprobar(0)){
-                if (contador==coloresMaquina.size){
-                    secuencia()
+            red.setOnClickListener {
+                pulsar(0)
+                if (comprobar(0)) {
+                    if (contador == coloresMaquina.size) {
+                        secuencia()
+                    }
+                } else {
+                    fin()
                 }
             }
-            else{
-                fin()
-            }
-        }
-        blue.setOnClickListener {
-            pulsar(1)
-            if (comprobar(1)){
-                if (contador==coloresMaquina.size){
-                    secuencia()
+            blue.setOnClickListener {
+                pulsar(1)
+                if (comprobar(1)) {
+                    if (contador == coloresMaquina.size) {
+                        secuencia()
+                    }
+                } else {
+                    fin()
                 }
             }
-            else{
-                fin()
-            }
-        }
-        green.setOnClickListener {
-            pulsar(2)
-            if (comprobar(2)){
-                if (contador==coloresMaquina.size){
-                    secuencia()
+            green.setOnClickListener {
+                pulsar(2)
+                if (comprobar(2)) {
+                    if (contador == coloresMaquina.size) {
+                        secuencia()
+                    }
+                } else {
+                    fin()
                 }
             }
-            else{
-                fin()
-            }
-        }
-        yellow.setOnClickListener {
-            pulsar(3)
-            if (comprobar(3)){
-                if (contador==coloresMaquina.size){
-                    secuencia()
+            yellow.setOnClickListener {
+                pulsar(3)
+                if (comprobar(3)) {
+                    if (contador == coloresMaquina.size) {
+                        secuencia()
+                    }
+                } else {
+                    fin()
                 }
             }
-            else{
-                fin()
-            }
-        }
-
-
-
 
     }
 
@@ -100,9 +103,20 @@ class MainActivity : AppCompatActivity() {
 
     fun secuencia(){
         ronda++
+        miModelo.addList(ronda)
+        miModelo.rondaliveData.observe(
+            this,
+            Observer (
+                fun(listaRondas : MutableList<Int>){
+                    println("Array: "+listaRondas.toString())
+                }
+            )
+        )
         setRondas(ronda)
         contador = 0
         var random = (0..3).random()
+
+
         coloresMaquina.add(random)
         leerSecuencia()
 
@@ -138,8 +152,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     fun leerSecuencia() {
 
         var i: Int = 0
@@ -153,7 +165,7 @@ class MainActivity : AppCompatActivity() {
                 val green = findViewById<Button>(R.id.green)
                 val yellow = findViewById<Button>(R.id.yellow)
 
-                println(coloresMaquina.size)
+
 
                 if(puntos<10){
                     delay(500)
@@ -172,7 +184,6 @@ class MainActivity : AppCompatActivity() {
                     1 -> blue.setBackgroundColor(Color.WHITE)
                     2 -> green.setBackgroundColor(Color.WHITE)
                     3 -> yellow.setBackgroundColor(Color.WHITE)
-
                 }
                 if(puntos<10){
                     delay(500)
@@ -200,14 +211,19 @@ class MainActivity : AppCompatActivity() {
 
     fun comprobar(color: Int): Boolean {
 
-        if (contador == coloresMaquina.size){
-            puntos++
-        }
-
         return if (color == coloresMaquina[contador]){
             contador++
             puntos++
             setPuntuacion(puntos)
+            miModelo.addPunto(puntos)
+            miModelo.puntosLiveData.observe(
+                this,
+                Observer(
+                    fun (listaPuntos : MutableList<Int>){
+                        print("Puntos: "+listaPuntos.toString())
+                    }
+                )
+            )
             return true
         }
         else{
@@ -217,18 +233,37 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun fin(){
-        Toast.makeText(this, "FIN DEL JUEGO", Toast.LENGTH_SHORT).show()
+
+        val recortext = findViewById<TextView>(R.id.record)
+
+        ronda = 0
+        coloresMaquina = arrayListOf()
+        puntos = 0
+        partida = false
+
         setPuntuacion(0)
         setRondas(0)
+        Toast.makeText(this, "FIN DEL JUEGO", Toast.LENGTH_SHORT).show()
+
+        miModelo.rondas.forEach(){
+            if (it>recoRonda) {
+                recoRonda = it
+            }
+        }
+        miModelo.puntos.forEach(){
+            if (it>recorPuntos) {
+                recorPuntos = it
+            }
+        }
+        recortext.setText("Record -> RONDA: "+recoRonda+" || PUNTUACION: "+recorPuntos)
+        miModelo.rondas.clear()
+
     }
 
     fun setPuntuacion(points: Int){
         val puntuacion = findViewById<TextView>(R.id.textView)
         puntuacion.setText("Puntuacion: "+points)
     }
-
-
-
 
     override fun onStart(){
         super.onStart();
@@ -238,7 +273,6 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause();
         Log.d("Estado","onResume")
-
     }
 
     override fun onRestart() {
