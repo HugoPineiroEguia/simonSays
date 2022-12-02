@@ -1,6 +1,7 @@
 package com.example.simonsays
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,11 +12,16 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.room.Room
 import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
 
+
 @Suppress("UNUSED_EXPRESSION")
 class MainActivity : AppCompatActivity() {
+
+
+
 
     var coloresMaquina = ArrayList<Int>()
     var partida : Boolean = false
@@ -25,19 +31,20 @@ class MainActivity : AppCompatActivity() {
     var recoRonda :Int = 0
     var recorPuntos :Int = 0
     val miModelo by viewModels<MyViewModelito>()
+    var partidDB = Partida(0,0)
+    val datosDao = miModelo.db.partidaDao()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-
         val start = findViewById<Button>(R.id.start)
         val red = findViewById<Button>(R.id.red)
         val blue = findViewById<Button>(R.id.blue)
         val green = findViewById<Button>(R.id.green)
         val yellow = findViewById<Button>(R.id.yellow)
+
 
         setPuntuacion(0)
 
@@ -104,6 +111,8 @@ class MainActivity : AppCompatActivity() {
     fun secuencia(){
         ronda++
         miModelo.addList(ronda)
+        println("hasta aqui NO chucla")
+
         miModelo.rondaliveData.observe(
             this,
             Observer (
@@ -234,6 +243,15 @@ class MainActivity : AppCompatActivity() {
 
     fun fin(){
 
+        partidDB.rondas=ronda
+        partidDB.puntos=puntos
+        datosDao.insertAll(partidDB)
+        var partidas: List<Partida> = datosDao.getAll()
+        println("Base de datos: "+partidas.size)
+        partidas.forEach(){
+            println("Rondas: "+it.rondas+" || Puntos: "+it.puntos)
+        }
+
         val recortext = findViewById<TextView>(R.id.record)
 
         ronda = 0
@@ -257,6 +275,7 @@ class MainActivity : AppCompatActivity() {
         }
         recortext.setText("Record -> RONDA: "+recoRonda+" || PUNTUACION: "+recorPuntos)
         miModelo.rondas.clear()
+
 
     }
 

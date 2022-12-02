@@ -1,10 +1,20 @@
 package com.example.simonsays
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.room.Room
+import androidx.room.*
 
+class MyViewModelito(application: Application) : AndroidViewModel(application) {
 
-class MyViewModelito: ViewModel() {
+    val context = getApplication<Application>().applicationContext
+    val db = Room.databaseBuilder(
+        context,
+        AppDatabase::class.java, "simon-dice"
+    ).build()
+    val datosDAO = db.partidaDao()
 
     val rondas = mutableListOf<Int>()
     val puntos = mutableListOf<Int>()
@@ -25,6 +35,11 @@ class MyViewModelito: ViewModel() {
         puntos.add(punto)
         puntosLiveData.value = puntos
     }
+
+    fun checar(){
+
+    }
+
 
 
 }
